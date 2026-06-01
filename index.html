@@ -1,0 +1,414 @@
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1C2B3A;
+  --gold:#C49A45;
+  --gold-light:#E8C87A;
+  --cream:#F0EBD8;
+  --f:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+}
+.wrap{font-family:var(--f);max-width:620px;margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:3rem}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;background:var(--navy);border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo svg{display:block}
+.brand-name{font-size:17px;font-weight:600;letter-spacing:-0.3px;color:var(--color-text-primary)}
+.brand-tag{font-size:12px;color:var(--color-text-secondary);margin-top:1px}
+.step-pills{display:flex;align-items:center;gap:6px}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--color-border-tertiary);transition:all .25s}
+.step-dot.on{background:var(--navy);width:22px;border-radius:4px}
+
+.screen{display:none}
+.screen.active{display:block}
+
+.s-hero{margin-bottom:2.5rem}
+.s-hero h1{font-size:26px;font-weight:700;letter-spacing:-0.6px;color:var(--color-text-primary);line-height:1.2;margin-bottom:8px}
+.s-hero p{font-size:15px;color:var(--color-text-secondary);line-height:1.6}
+
+.sec{margin-bottom:2.5rem}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--color-text-secondary);margin-bottom:12px;padding-left:1px}
+
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:16px;overflow:hidden}
+
+.field{padding:14px 18px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;gap:5px}
+.field:last-child{border-bottom:none}
+.field label{font-size:12px;font-weight:500;color:var(--color-text-secondary);letter-spacing:.01em}
+.field input,.field textarea{font-family:var(--f);font-size:15px;color:var(--color-text-primary);background:transparent;border:none;outline:none;width:100%;padding:0;resize:none;-webkit-appearance:none;appearance:none}
+.field textarea{min-height:90px;line-height:1.55}
+.field input::placeholder,.field textarea::placeholder{color:var(--color-text-tertiary)}
+.field-row{display:grid;grid-template-columns:1fr 1fr}
+.field-row .field:first-child{border-right:0.5px solid var(--color-border-tertiary)}
+
+.err-msg{font-size:11px;color:#E24B4A;display:none}
+.err-msg.show{display:block}
+.field.has-err{background:rgba(226,75,74,.04)}
+.field.has-err label{color:#A32D2D}
+
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.svc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:13px;padding:16px 8px 14px;text-align:center;cursor:pointer;transition:all .18s;font-family:var(--f)}
+.svc:hover{border-color:var(--color-border-secondary);background:var(--color-background-secondary)}
+.svc.on{background:var(--navy);border-color:var(--navy)}
+.svc i{font-size:22px;display:block;margin-bottom:8px;color:var(--color-text-secondary)}
+.svc.on i{color:var(--gold-light)}
+.svc span{font-size:12px;font-weight:500;color:var(--color-text-secondary);line-height:1.3;display:block}
+.svc.on span{color:#fff}
+
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:8px 16px;border-radius:100px;border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);font-size:13px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;transition:all .18s;font-family:var(--f)}
+.pill:hover{border-color:var(--color-border-secondary)}
+.pill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+.urgency-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.urg{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:13px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .18s;font-family:var(--f)}
+.urg:hover{border-color:var(--color-border-secondary)}
+.urg.on{background:var(--navy);border-color:var(--navy)}
+.urg i{font-size:20px;display:block;margin-bottom:6px;color:var(--color-text-secondary)}
+.urg.on i{color:var(--gold-light)}
+.urg .urg-t{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:2px}
+.urg .urg-s{font-size:11px;color:var(--color-text-secondary);line-height:1.3}
+.urg.on .urg-t,.urg.on .urg-s{color:#fff}
+
+.nav-row{display:flex;gap:10px;margin-top:2.5rem}
+.btn-next{flex:1;padding:15px;background:var(--navy);color:#fff;font-family:var(--f);font-size:15px;font-weight:600;border:none;border-radius:13px;cursor:pointer;letter-spacing:-0.2px;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s,transform .1s}
+.btn-next:hover{opacity:.9}
+.btn-next:active{transform:scale(.99)}
+.btn-back{padding:15px 20px;background:transparent;color:var(--color-text-secondary);font-family:var(--f);font-size:15px;font-weight:500;border:0.5px solid var(--color-border-secondary);border-radius:13px;cursor:pointer;transition:background .15s}
+.btn-back:hover{background:var(--color-background-secondary)}
+
+.gold-line{height:2px;background:var(--gold);border-radius:2px;margin-bottom:3rem;opacity:.35;width:48px}
+
+.progress{height:2px;background:var(--color-border-tertiary);border-radius:2px;margin-bottom:3rem;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease}
+
+.check-wrap{text-align:center;padding:1.5rem 0 2rem}
+.check-circle{width:68px;height:68px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.check-circle i{font-size:30px;color:var(--gold-light)}
+.check-wrap h2{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--color-text-primary);margin-bottom:8px}
+.check-wrap p{font-size:14px;color:var(--color-text-secondary);line-height:1.6}
+
+.sum-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:16px;overflow:hidden;margin-bottom:1.5rem}
+.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:13px 18px;border-bottom:0.5px solid var(--color-border-tertiary);gap:16px}
+.sum-row:last-child{border-bottom:none}
+.sum-k{font-size:13px;color:var(--color-text-secondary);font-weight:500;white-space:nowrap;flex-shrink:0;min-width:80px}
+.sum-v{font-size:13px;color:var(--color-text-primary);text-align:right;line-height:1.5}
+
+.badge{display:inline-block;padding:3px 11px;background:var(--navy);color:#fff;border-radius:100px;font-size:12px;font-weight:500}
+.badge-gold{background:var(--gold);color:#412402}
+
+.wa-btn{width:100%;padding:16px;background:#25D366;color:#fff;font-family:var(--f);font-size:15px;font-weight:600;border:none;border-radius:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:opacity .15s}
+.wa-btn:hover{opacity:.9}
+.wa-btn i{font-size:20px}
+
+.reset-btn{width:100%;padding:13px;margin-top:10px;background:transparent;color:var(--color-text-secondary);font-family:var(--f);font-size:14px;font-weight:500;border:0.5px solid var(--color-border-secondary);border-radius:13px;cursor:pointer;transition:background .15s}
+.reset-btn:hover{background:var(--color-background-secondary)}
+</style>
+
+<div class="wrap">
+<h2 class="sr-only">Midad Studio — project order form</h2>
+
+<div class="top-bar">
+  <div class="brand">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3L3 21h4.5l1.8-4h5.4l1.8 4H21L12 3z" fill="#C49A45"/>
+        <path d="M10.2 14l1.8-5 1.8 5h-3.6z" fill="#1C2B3A"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand-name">Midad Studio</div>
+      <div class="brand-tag">New project order</div>
+    </div>
+  </div>
+  <div class="step-pills" id="stepPills">
+    <div class="step-dot on" id="d0"></div>
+    <div class="step-dot" id="d1"></div>
+    <div class="step-dot" id="d2"></div>
+    <div class="step-dot" id="d3"></div>
+  </div>
+</div>
+
+<div class="progress"><div class="progress-fill" id="prog" style="width:25%"></div></div>
+
+<div class="screen active" id="s0">
+  <div class="s-hero">
+    <h1>What do you need?</h1>
+    <p>Choose the service that best describes your project. You can add details in the next steps.</p>
+  </div>
+  <div class="sec">
+    <div class="sec-label">Service type</div>
+    <div class="svc-grid">
+      <button class="svc on" data-svc="Brand identity" onclick="pick(this,'svc')">
+        <i class="ti ti-diamond" aria-hidden="true"></i>
+        <span>Brand identity</span>
+      </button>
+      <button class="svc" data-svc="Print design" onclick="pick(this,'svc')">
+        <i class="ti ti-printer" aria-hidden="true"></i>
+        <span>Print design</span>
+      </button>
+      <button class="svc" data-svc="Logo design" onclick="pick(this,'svc')">
+        <i class="ti ti-vector" aria-hidden="true"></i>
+        <span>Logo design</span>
+      </button>
+      <button class="svc" data-svc="Packaging" onclick="pick(this,'svc')">
+        <i class="ti ti-box" aria-hidden="true"></i>
+        <span>Packaging</span>
+      </button>
+      <button class="svc" data-svc="Social media" onclick="pick(this,'svc')">
+        <i class="ti ti-photo" aria-hidden="true"></i>
+        <span>Social media</span>
+      </button>
+      <button class="svc" data-svc="Other" onclick="pick(this,'svc')">
+        <i class="ti ti-dots" aria-hidden="true"></i>
+        <span>Other</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Project brief</div>
+    <div class="card">
+      <div class="field" id="f-brief">
+        <label>Describe your project</label>
+        <textarea id="brief" placeholder="Your goals, audience, style references, colours you love or hate — anything that helps us understand your vision..."></textarea>
+        <span class="err-msg" id="e-brief">Please add a short description</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-next" onclick="go(1)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<div class="screen" id="s1">
+  <div class="s-hero">
+    <h1>About you</h1>
+    <p>So we know who to reach and where to send your project.</p>
+  </div>
+  <div class="sec">
+    <div class="sec-label">Contact details</div>
+    <div class="card">
+      <div class="field-row">
+        <div class="field" id="f-name">
+          <label>Full name</label>
+          <input type="text" id="name" placeholder="Youcef Benali" />
+          <span class="err-msg" id="e-name">Required</span>
+        </div>
+        <div class="field" id="f-phone">
+          <label>Phone / WhatsApp</label>
+          <input type="tel" id="phone" placeholder="+213 6XX XXX XXX" />
+          <span class="err-msg" id="e-phone">Required</span>
+        </div>
+      </div>
+      <div class="field" id="f-email">
+        <label>Email address</label>
+        <input type="email" id="email" placeholder="youcef@company.com" />
+        <span class="err-msg" id="e-email">Enter a valid email</span>
+      </div>
+      <div class="field">
+        <label>Company / brand name <span style="font-weight:400;color:var(--color-text-tertiary)">(optional)</span></label>
+        <input type="text" id="company" placeholder="Your company or brand" />
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Delivery address <span style="font-weight:400;color:var(--color-text-tertiary);text-transform:none;letter-spacing:0;font-size:12px">(if print is needed)</span></div>
+    <div class="card">
+      <div class="field">
+        <label>City, Wilaya</label>
+        <input type="text" id="address" placeholder="e.g. Ouargla, 30 — or leave blank for digital only" />
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(0)"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+    <button class="btn-next" onclick="go(2)">Continue <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="s-hero">
+    <h1>Budget & timeline</h1>
+    <p>This helps us scope your project and suggest the right package.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Budget range</div>
+    <div class="pills">
+      <button class="pill" data-budget="Under 5,000 DZD" onclick="pick(this,'budget')">Under 5k DZD</button>
+      <button class="pill on" data-budget="5,000 – 15,000 DZD" onclick="pick(this,'budget')">5k – 15k DZD</button>
+      <button class="pill" data-budget="15,000 – 50,000 DZD" onclick="pick(this,'budget')">15k – 50k DZD</button>
+      <button class="pill" data-budget="50,000+ DZD" onclick="pick(this,'budget')">50k+ DZD</button>
+      <button class="pill" data-budget="Let's discuss" onclick="pick(this,'budget')">Let's discuss</button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">When do you need it?</div>
+    <div class="urgency-grid">
+      <button class="urg" data-urg="ASAP (1–2 weeks)" onclick="pick(this,'urg')">
+        <i class="ti ti-bolt" aria-hidden="true"></i>
+        <div class="urg-t">ASAP</div>
+        <div class="urg-s">1 – 2 weeks</div>
+      </button>
+      <button class="urg on" data-urg="Standard (3–4 weeks)" onclick="pick(this,'urg')">
+        <i class="ti ti-clock" aria-hidden="true"></i>
+        <div class="urg-t">Standard</div>
+        <div class="urg-s">3 – 4 weeks</div>
+      </button>
+      <button class="urg" data-urg="Flexible (1–2 months)" onclick="pick(this,'urg')">
+        <i class="ti ti-calendar" aria-hidden="true"></i>
+        <div class="urg-t">Flexible</div>
+        <div class="urg-s">1 – 2 months</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Specific date <span style="font-weight:400;color:var(--color-text-tertiary);text-transform:none;letter-spacing:0;font-size:12px">(optional)</span></div>
+    <div class="card">
+      <div class="field">
+        <label>Describe your deadline</label>
+        <input type="text" id="deadline" placeholder="e.g. Before Ramadan, end of June, before our launch event…" />
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="go(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i></button>
+    <button class="btn-next" onclick="go(3)">Review order <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<div class="screen" id="s3">
+  <div class="check-wrap">
+    <div class="check-circle"><i class="ti ti-checks" aria-hidden="true"></i></div>
+    <h2>Almost done</h2>
+    <p>Review your order below, then send it directly to Midad Studio.</p>
+  </div>
+
+  <div class="sum-card">
+    <div class="sum-row"><span class="sum-k">Service</span><span class="sum-v" id="r-svc"></span></div>
+    <div class="sum-row"><span class="sum-k">Brief</span><span class="sum-v" id="r-brief"></span></div>
+    <div class="sum-row"><span class="sum-k">Name</span><span class="sum-v" id="r-name"></span></div>
+    <div class="sum-row"><span class="sum-k">Phone</span><span class="sum-v" id="r-phone"></span></div>
+    <div class="sum-row"><span class="sum-k">Email</span><span class="sum-v" id="r-email"></span></div>
+    <div class="sum-row" id="r-company-row"><span class="sum-k">Brand</span><span class="sum-v" id="r-company"></span></div>
+    <div class="sum-row" id="r-address-row"><span class="sum-k">Delivery</span><span class="sum-v" id="r-address"></span></div>
+    <div class="sum-row"><span class="sum-k">Budget</span><span class="sum-v" id="r-budget"></span></div>
+    <div class="sum-row"><span class="sum-k">Timeline</span><span class="sum-v" id="r-urg"></span></div>
+    <div class="sum-row" id="r-dl-row"><span class="sum-k">Deadline note</span><span class="sum-v" id="r-dl"></span></div>
+  </div>
+
+  <button class="wa-btn" onclick="sendWA()">
+    <i class="ti ti-brand-whatsapp" aria-hidden="true"></i>
+    Send to Midad Studio via WhatsApp
+  </button>
+  <button class="reset-btn" onclick="go(0);resetAll()">← Start over</button>
+</div>
+
+</div>
+
+<script>
+var state={svc:'Brand identity',budget:'5,000 – 15,000 DZD',urg:'Standard (3–4 weeks)'};
+var cur=0;
+var progs=['25%','50%','75%','100%'];
+
+function pick(btn,key){
+  var group=btn.parentElement.querySelectorAll('.'+btn.className.split(' ')[0]);
+  group.forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  state[key]=btn.dataset[key==='svc'?'svc':key==='budget'?'budget':'urg'];
+}
+
+function go(n){
+  if(n>cur&&!validate(cur))return;
+  if(n===3)fillSummary();
+  document.getElementById('s'+cur).classList.remove('active');
+  cur=n;
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('prog').style.width=progs[cur];
+  for(var i=0;i<4;i++){
+    var d=document.getElementById('d'+i);
+    d.classList.toggle('on',i===cur);
+  }
+  window.scrollTo(0,0);
+}
+
+function validate(step){
+  var ok=true;
+  if(step===0){
+    ok=check('brief','e-brief',function(v){return v.trim().length>8});
+  }
+  if(step===1){
+    ok=check('name','e-name',function(v){return v.trim().length>1})&&ok;
+    ok=check('phone','e-phone',function(v){return v.trim().length>5})&&ok;
+    ok=check('email','e-email',function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())})&&ok;
+  }
+  return ok;
+}
+
+function check(id,eid,test){
+  var el=document.getElementById(id);
+  var er=document.getElementById(eid);
+  var f=el.closest('.field');
+  var v=test(el.value);
+  f.classList.toggle('has-err',!v);
+  er.classList.toggle('show',!v);
+  return v;
+}
+
+function fillSummary(){
+  var svc=document.querySelector('.svc.on');
+  document.getElementById('r-svc').innerHTML='<span class="badge">'+svc.dataset.svc+'</span>';
+  var brief=document.getElementById('brief').value.trim();
+  document.getElementById('r-brief').textContent=brief.length>120?brief.slice(0,120)+'…':brief;
+  document.getElementById('r-name').textContent=document.getElementById('name').value.trim();
+  document.getElementById('r-phone').textContent=document.getElementById('phone').value.trim();
+  document.getElementById('r-email').textContent=document.getElementById('email').value.trim();
+  var co=document.getElementById('company').value.trim();
+  var cor=document.getElementById('r-company-row');
+  if(co){document.getElementById('r-company').textContent=co;cor.style.display='flex';}else{cor.style.display='none';}
+  var ad=document.getElementById('address').value.trim();
+  var adr=document.getElementById('r-address-row');
+  if(ad){document.getElementById('r-address').textContent=ad;adr.style.display='flex';}else{adr.style.display='none';}
+  var bg=document.querySelector('.pill.on');
+  document.getElementById('r-budget').innerHTML=bg?'<span class="badge-gold badge">'+bg.dataset.budget+'</span>':'—';
+  var ur=document.querySelector('.urg.on');
+  document.getElementById('r-urg').textContent=ur?ur.dataset.urg:'—';
+  var dl=document.getElementById('deadline').value.trim();
+  var dlr=document.getElementById('r-dl-row');
+  if(dl){document.getElementById('r-dl').textContent=dl;dlr.style.display='flex';}else{dlr.style.display='none';}
+}
+
+function sendWA(){
+  var m='🎨 *New Order — Midad Studio*\n\n';
+  m+='*Service:* '+document.querySelector('.svc.on').dataset.svc+'\n';
+  m+='*Brief:* '+document.getElementById('brief').value.trim()+'\n';
+  m+='*Name:* '+document.getElementById('name').value.trim()+'\n';
+  m+='*Phone:* '+document.getElementById('phone').value.trim()+'\n';
+  m+='*Email:* '+document.getElementById('email').value.trim()+'\n';
+  var co=document.getElementById('company').value.trim();
+  if(co)m+='*Brand:* '+co+'\n';
+  var ad=document.getElementById('address').value.trim();
+  if(ad)m+='*Delivery:* '+ad+'\n';
+  var bg=document.querySelector('.pill.on');
+  if(bg)m+='*Budget:* '+bg.dataset.budget+'\n';
+  var ur=document.querySelector('.urg.on');
+  if(ur)m+='*Timeline:* '+ur.dataset.urg+'\n';
+  var dl=document.getElementById('deadline').value.trim();
+  if(dl)m+='*Deadline note:* '+dl+'\n';
+  openLink('https://wa.me/213XXXXXXXXX?text='+encodeURIComponent(m));
+}
+
+function resetAll(){
+  ['brief','name','phone','email','company','address','deadline'].forEach(function(id){document.getElementById(id).value='';});
+  document.querySelectorAll('.has-err').forEach(function(el){el.classList.remove('has-err')});
+  document.querySelectorAll('.err-msg.show').forEach(function(el){el.classList.remove('show')});
+}
+</script>
